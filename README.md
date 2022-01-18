@@ -55,3 +55,15 @@ http://localhost
 
 - Base image
   - [mysql/mysql-server](https://hub.docker.com/r/mysql/mysql-server):8.0
+
+## 参考URL
+https://qiita.com/morry_48/items/abd620f051fb4f36dcc2
+
+## 502 BadGatewayになる場合
+nginxコンテナのログを確認
+```
+connect() to unix:/var/run/php-fpm/php-fpm.sock failed (2: No such file or directory) while connecting to upstream
+```  
+上記ログの場合は、app コンテナで`php artisan serve`で起動・アクセスできるか確認  
+appコンテナのPHPサーバーでアクセスできる場合はappコンテナで下記コマンドでphp-fpmを起動する
+`php-fpm`
