@@ -51,6 +51,17 @@ const Home = () => {
     });
   }
   
+  // バックエンド側から取得したデータ(posts)をフロントエンド側で使う形に整形する変数(rows)に加工し表示
+  let rows = [];
+  posts.map((post) => 
+    rows.push({
+      name: post.name,
+      content: post.content,
+      editBtn: <Button color="secondary" variant="contained">編集</Button>,
+      deleteBtn: <Button color="primary" variant="contained">かんりょう</Button>
+    })
+  );
+
   return (
     <div className="container">
       <div className="row justify-content-center">
