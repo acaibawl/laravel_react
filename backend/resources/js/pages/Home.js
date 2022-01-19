@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button, Card } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import MainTable from "../components/MainTable";
+import PostFrom from "../components/PostForm";
 
 // スタイルの定義
 const useStyles = makeStyles((theme) => createStyles({
@@ -34,6 +35,8 @@ const Home = () => {
   const classes = useStyles();
 
   const [posts, setPosts] = useState([]);
+  // フォームの入力値を管理するステート
+  const [formData, setFormData] = useState({name: '', content: ''});
 
   useEffect(() => {
     getPostData();
@@ -50,6 +53,38 @@ const Home = () => {
       console.log('通信に失敗しました。');
     });
   }
+
+  const inputChange = (e) => {
+    const key = e.target.name;
+    const value = e.target.value;
+    formData[key] = value;
+    let data = Object.assign({}, formData);
+    setFormData(data);
+  }
+
+  const createPost = async() => {
+    // 空だと弾く
+    if(formData == '') {
+      return;
+    }
+
+    // 入力値を投げる
+    await axios
+        .post('/api/post/create', {
+          name: formData.name,
+          content: formData.content
+        })
+        .then((res) => {
+          // 戻り値をtodosにセット
+          const tempPosts = posts;
+          tempPosts.push(res.data);
+          setPosts(tempPosts);
+          setFormData('');
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  }
   
   // バックエンド側から取得したデータ(posts)をフロントエンド側で使う形に整形する変数(rows)に加工し表示
   let rows = [];
@@ -58,7 +93,7 @@ const Home = () => {
       name: post.name,
       content: post.content,
       editBtn: <Button color="secondary" variant="contained">編集</Button>,
-      deleteBtn: <Button color="primary" variant="contained">かんりょう</Button>
+      deleteBtn: <Button color="primary" variant="contained">完了</Button>
     })
   );
 
@@ -68,6 +103,9 @@ const Home = () => {
         <div className="col-md-10">
           <div className="card">
             <h1>タスク管理</h1>
+            <Card className={classes.card}>
+              <PostFrom data={formData} btnFunc={createPost} inputChange={inputChange} />
+            </Card>
             <Card className={classes.card}>
               {/* テーブル部分の定義 */}
               <MainTable headerList={headerList} rows={rows} />
