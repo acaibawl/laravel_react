@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import axios from 'axios';
 import { Button, Card } from "@material-ui/core";
 import { makeStyles, createStyles } from "@material-ui/core/styles";
 import MainTable from "../components/MainTable";
@@ -31,6 +32,24 @@ let rows = [
 const Home = () => {
   // 定義したスタイルを利用するための設定
   const classes = useStyles();
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    getPostData();
+  }, [])
+
+  const getPostData = () => {
+   axios
+    .get('/api/posts')
+    .then(response => {
+      setPosts(response.data);
+      console.log(response.data);
+    })
+    .catch(() => {
+      console.log('通信に失敗しました。');
+    });
+  }
   
   return (
     <div className="container">
