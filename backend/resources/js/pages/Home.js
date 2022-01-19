@@ -85,6 +85,21 @@ const Home = () => {
           console.log(error);
         });
   }
+
+  const deletePost = async(post) => {
+    await axios
+        .post('/api/delete', {
+          id: post.id
+        })
+        .then((res) => {
+          this.setState({
+            posts: res.posts
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  }
   
   // バックエンド側から取得したデータ(posts)をフロントエンド側で使う形に整形する変数(rows)に加工し表示
   let rows = [];
@@ -93,7 +108,7 @@ const Home = () => {
       name: post.name,
       content: post.content,
       editBtn: <Button color="secondary" variant="contained" key={post.id} href={`/post/edit/${post.id}`}>編集</Button>,
-      deleteBtn: <Button color="primary" variant="contained">完了</Button>
+      deleteBtn: <Button color="primary" variant="contained" href="/" onClick={() => deletePost(post)}>完了</Button>
     })
   );
 
